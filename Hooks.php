@@ -75,7 +75,7 @@ class Hooks
 	 * Runs all valid callbacks associated with a registered event
 	 * @param string $event_handle: The name of the event you wish to run the actions for
 	 */
-	public function run_actions(string $event_handle)
+	public function run_actions(string $event_handle, array $data)
 	{
 		if ( array_key_exists($event_handle, $this->hookable_events) ) {
 			$hooks = $this->get_event_hooks($event_handle);
