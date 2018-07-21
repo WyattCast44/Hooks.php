@@ -77,8 +77,8 @@ class Hooks
 	 */
 	public function run_actions(string $event_handle)
 	{
-		if ( array_key_exists($eventName, $this->hookableEvents) ) {
-			$hooks = $this->getEventHooks($eventName);
+		if ( array_key_exists($event_handle, $this->hookable_events) ) {
+			$hooks = $this->get_event_hooks($event_handle);
 			foreach ($hooks as $callback) {
 				if (function_exists($callback)) {
 					call_user_func($callback);
