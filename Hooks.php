@@ -75,16 +75,38 @@ class Hooks
 	 * Runs all valid callbacks associated with a registered event
 	 * @param string $event_handle: The name of the event you wish to run the actions for
 	 */
-	public function run_actions(string $event_handle, array $data)
+	public function run_actions(string $event_handle, array $data = [])
 	{
-		if ( array_key_exists($event_handle, $this->hookable_events) ) {
-			$hooks = $this->get_event_hooks($event_handle);
-			foreach ($hooks as $callback) {
-				if (function_exists($callback)) {
-					call_user_func($callback);
+		if ( !empty($data) ) :
+			// User passed some data
+			$names = ['Wyatt', 'James', 'Amber'];
+			$data = [
+				'startup' => $names,
+				'test2' => 'heloo'
+			];
+			if ( array_key_exists($event_handle, $this->hookable_events) ) {
+				$hooks = $this->get_event_hooks($event_handle);
+				foreach ($hooks as $callback) {
+					if (function_exists($callback)) {
+						$function = new ReflectionFunction($callback);
+						$num_params = $function->getNumberOfRequiredParameters();
+						if ($num_params > 0) {
+							call_user_func_array($callback, $data);
+						}
+					}
 				}
 			}
-		}
+		else:
+			// User didnt pass any data
+			if ( array_key_exists($event_handle, $this->hookable_events) ) {
+				$hooks = $this->get_event_hooks($event_handle);
+				foreach ($hooks as $callback) {
+					if (function_exists($callback)) {
+						call_user_func($callback);
+					}
+				}
+			}
+		endif;
 	}
 	
 	/**
