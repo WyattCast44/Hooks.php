@@ -79,11 +79,6 @@ class Hooks
 	{
 		if ( !empty($data) ) :
 			// User passed some data
-			$names = ['Wyatt', 'James', 'Amber'];
-			$data = [
-				'startup' => $names,
-				'test2' => 'heloo'
-			];
 			if ( array_key_exists($event_handle, $this->hookable_events) ) {
 				$hooks = $this->get_event_hooks($event_handle);
 				foreach ($hooks as $callback) {
