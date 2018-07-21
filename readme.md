@@ -61,4 +61,4 @@ run_actions('footer');
 # To Do
 - Add a way to specify the running order of actions registered to an event
 - Maybe tags like: run_after, run_before, run_first, run_last?
-- Make a way to call a callback with an array of data 
+- Make a way to call a callback with an array of data. Read: [call_user_func_array](https://secure.php.net/manual/en/function.call-user-func-array.php)
