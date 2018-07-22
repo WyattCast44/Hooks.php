@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Hooks.php';
+use App\Hooks;
 
 /**
  * Add a hookable event

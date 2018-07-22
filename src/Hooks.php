@@ -1,6 +1,6 @@
 <?php
 
-echo 'A simple PHP Hooks system for registering hookable events, adding callbacks to registered events, and running callback associated with registered events.';
+namespace App;
 
 /**
  * Hooks.php | A simple system for:
@@ -14,8 +14,7 @@ echo 'A simple PHP Hooks system for registering hookable events, adding callback
  * 
  */
 
-class Hooks
-{
+class Hooks {
 	/**
 	 * Holds the class instance
 	 */
@@ -26,7 +25,6 @@ class Hooks
 	 * callbacks
 	 */
 	private $hookable_events = [];
-
 	/**
 	 * Adds a hookable event to $hookable_events
 	 * @param string $event_handle: The name of the event you wish to register
@@ -37,7 +35,6 @@ class Hooks
 			$this->hookable_events[$event_handle] = [];
 		endif;
 	}
-
 	/**
 	 * Adds a callback to a registered event
 	 * @param string $event_handle: The name of the event you wish to register
@@ -58,7 +55,6 @@ class Hooks
 			endif;			
 		endif;
 	}
-
 	/**
 	 * Adds a callback to a registered event
 	 * @param string $event_handle: The name of the event you wish to register
@@ -70,38 +66,37 @@ class Hooks
 		endif;
 		return [];
 	}
-
 	/**
 	 * Runs all valid callbacks associated with a registered event
 	 * @param string $event_handle: The name of the event you wish to run the actions for
 	 */
 	public function run_actions(string $event_handle, array $data = [])
 	{
-		if ( !empty($data) ) :
-			// User passed some data
-			if ( array_key_exists($event_handle, $this->hookable_events) ) {
-				$hooks = $this->get_event_hooks($event_handle);
-				foreach ($hooks as $callback) {
-					if (function_exists($callback)) {
+		if ( array_key_exists($event_handle, $this->hookable_events) ) {
+			$hooks = $this->get_event_hooks($event_handle);
+			if ( !empty($data) ) :
+				foreach ($hooks as $callback) :
+					if (function_exists($callback)) :
 						$function = new ReflectionFunction($callback);
 						$num_params = $function->getNumberOfRequiredParameters();
-						if ($num_params > 0) {
-							call_user_func_array($callback, $data);
+						if ( array_key_exists($callback, $data) && $num_params > 0 ) {
+							call_user_func_array($callback, $data[$callback]);
+						} else {
+							call_user_func($callback);
+						}
+					endif;
+				endforeach;
+			else:
+				if ( array_key_exists($event_handle, $this->hookable_events) ) {
+					$hooks = $this->get_event_hooks($event_handle);
+					foreach ($hooks as $callback) {
+						if (function_exists($callback)) {
+							call_user_func($callback);
 						}
 					}
 				}
-			}
-		else:
-			// User didnt pass any data
-			if ( array_key_exists($event_handle, $this->hookable_events) ) {
-				$hooks = $this->get_event_hooks($event_handle);
-				foreach ($hooks as $callback) {
-					if (function_exists($callback)) {
-						call_user_func($callback);
-					}
-				}
-			}
-		endif;
+			endif;
+		}
 	}
 	
 	/**
